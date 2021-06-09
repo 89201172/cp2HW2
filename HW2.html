@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Draw</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src=""></script>
+    <link rel="stylesheet" href="HW2.css">
+</head>
+<body>
+    <div id="plot">
+        <div class="container">
+            <canvas id="canvas"></canvas>
+            <div id="stickers">
+                <img draggable="true" id="sticker1" class="sticker" src="http://clipart-library.com/data_images/487831.png" alt="">
+                <img draggable="true" id="sticker2" class="sticker" src="http://clipart-library.com/data_images/487787.png" alt="">
+                <img draggable="true" id="sticker3" class="sticker" src="http://clipart-library.com/data_images/487743.png" alt="">
+                <img draggable="true" id="sticker4" class="sticker" src="http://clipart-library.com/data_images/487741.png" alt="">
+                <img draggable="true" id="sticker5" class="sticker" src="http://clipart-library.com/data_images/487815.png" alt="">
+                <img draggable="true" id="sticker6" class="sticker" src="http://clipart-library.com/data_images/402767.png" alt="">
+                <img draggable="true" id="sticker7" class="sticker" src="http://clipart-library.com/data_images/363964.gif" alt="">
+                <img draggable="true" id="sticker8" class="sticker" src="http://clipart-library.com/data_images/487785.png" alt="">
+                <img draggable="true" id="sticker9" class="sticker" src="http://clipart-library.com/data_images/487810.jpg" alt="">
+                <img draggable="true" id="sticker10" class="sticker" src="http://clipart-library.com/image_gallery/464509.png" alt="">
+                <img draggable="true" id="sticker11" class="sticker" src="http://clipart-library.com/image_gallery/464541.jpg" alt="">
+            </div>
+            <div>
+                <script>
+                    var colorNames = ["black", "gray", "silver", "white", "maroon", "red", "olive", "yellow", "green",
+                    "lime", "teal", "aqua", "navy", "blue", "purple", "fuchsia"];
+                    for (var i = 0; i < 16; i++) {
+                    document.write(`<div id="color${i}" onclick="changeColor(this)" class="color" style="background-color:
+                    ${colorNames[i]}"></div>`);
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="tools">
+            
+            <button onclick="clearCanvas()" type="button" class="button">Clear</button>
+            <button onclick="erase()" type="button" class="button">Eraser</button>
+            <div id="current-color"></div>
+
+            <div id="square">
+                <img id="squareimg" src="C:\Users\kosta\OneDrive\Υπολογιστής\square.jpg" alt="square">
+            
+                <img id="rectimg" src="C:\Users\kosta\OneDrive\Υπολογιστής\rect.jpg" alt="rect">
+            
+                <img id="circleimg" src="C:\Users\kosta\OneDrive\Υπολογιστής\circle.png" alt="circle">
+            </div>
+            
+            <div class="list-item" id="li1"><a id="item1" onclick="small()" href="#"></a> </div>
+            <div class="list-item" id="li2"><a id="item2" onclick="medium()" href="#"></a> </div>
+            <div class="list-item" id="li3"><a id="item3" onclick="large()" href="#"></a> </div>
+        
+        </div>
+    </div>
+    
+    <div id="picker">
+        <p>Square</p>
+        <p>The canvas is of dimensions: 800 width 600 height</p>
+        <div class="inner">
+            <label for="x-axis">Start of x-axis:</label>
+            <input id="x-axis" type="number" name="x-axis">
+        </div>
+        <div class="inner">
+            <label for="y-axis">Start of y-axis:</label>
+            <input id="y-axis" type="number" name="y-axis">
+        </div>
+        <div class="inner">
+            <label for="width">Choose side width:</label>
+            <input id="x-width" type="number" name="width">
+        </div>
+        <button id="submit">Submit</button>
+    </div>
+
+    <div id="picker2">
+        <p>Circle</p>
+        <p>The canvas is of dimensions: 800 width 600 height</p>
+        <div class="inner2">
+            <label for="x-axis">Center of x-axis:</label>
+            <input id="x-axis2" type="number" name="x-axis">
+        </div>
+        <div class="inner2">
+            <label for="y-axis">Center of y-axis:</label>
+            <input id="y-axis2" type="number" name="y-axis">
+        </div>
+        <div class="inner2">
+            <label for="radius">Choose the radius:</label>
+            <input id="radius" type="number" name="radius">
+        </div>
+        
+        <button id="submit2">Submit</button>
+    </div>
+
+    <div id="picker3">
+        <p>Rectangle</p>
+        <p>The canvas is of dimensions: 800 width 600 height</p>
+        <div class="inner">
+            <label for="x-axis">Start of x-axis:</label>
+            <input id="x-axis3" type="number" name="x-axis">
+        </div>
+        <div class="inner">
+            <label for="y-axis">Start of y-axis:</label>
+            <input id="y-axis3" type="number" name="y-axis">
+        </div>
+        <div class="inner">
+            <label for="width">Choose your width:</label>
+            <input id="x-width3" type="number" name="width">
+        </div>
+        <div class="inner"> 
+            <label for="height">Choose your height:</label>
+            <input id="y-height3" type="number" name="height"> 
+        </div>
+        <button id="submit3">Submit</button>
+    </div>
+
+    <script>
+        //set variables
+        const curcol = document.getElementById("current-color");
+        
+        const canvas = document.getElementById("canvas");
+        let context = canvas.getContext("2d");
+        //dimensions of canvas
+        canvas.width = 800;
+        canvas.height = 600;
+        //helps in order to clear the canvas
+        let startBackgroundColor = "white";
+        context.fillStyle = startBackgroundColor;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        let draw_color = "black";
+        let draw_width = "2";
+        let drawing = false;
+
+        //draw with the small pen
+        function small(){
+            draw_width = "2";
+            var item1 = document.getElementById("li1");
+            var item2 = document.getElementById("li2");
+            var item3 = document.getElementById("li3");
+            item1.style.borderColor = "red";
+            item2.style.borderColor = "lightblue";
+            item3.style.borderColor = "lightblue";
+        }
+        //draw with the medium pen
+        function medium(){
+            draw_width = "20";
+            var item1 = document.getElementById("li1");
+            var item2 = document.getElementById("li2");
+            var item3 = document.getElementById("li3");
+            item1.style.borderColor = "lightblue";
+            item2.style.borderColor = "red";
+            item3.style.borderColor = "lightblue";
+        }
+        //draw with the large pen
+        function large(){
+            draw_width = "50";
+            var item1 = document.getElementById("li1");
+            var item2 = document.getElementById("li2");
+            var item3 = document.getElementById("li3");
+            item1.style.borderColor = "lightblue";
+            item2.style.borderColor = "lightblue";
+            item3.style.borderColor = "red";
+        }
+        //functions for drawing
+        function start(event){
+            drawing = true;
+            context.beginPath();
+            context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            event.preventDefault();
+        }
+        function draw(event){
+            if(drawing) {
+                context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+                context.strokeStyle = draw_color;
+                context.lineWidth = draw_width;
+                context.lineCap = "round";
+                context.lineJoin = "round";
+                context.stroke();
+            }
+            event.preventDefault();
+        }
+        function stop(event){
+            if(drawing){
+                context.stroke();
+                context.closePath();
+                drawing = false;
+            }
+            event.preventDefault();
+            
+        }
+        //function for changing color
+        function changeColor(element){
+            draw_color = element.style.backgroundColor;
+            curcol.style.backgroundColor = draw_color;
+        }
+        //erasing
+        function erase(){
+            draw_color = "white";
+            curcol.style.backgroundColor = draw_color;
+            draw_width = "50";
+            var item1 = document.getElementById("li1");
+            var item2 = document.getElementById("li2");
+            var item3 = document.getElementById("li3");
+            item1.style.borderColor = "lightblue";
+            item2.style.borderColor = "lightblue";
+            item3.style.borderColor = "red";
+        }
+        //clear everything
+        function clearCanvas(){
+            context.fillStyle = startBackgroundColor;
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        //event listeners
+        canvas.addEventListener("touchstart", start);
+        canvas.addEventListener("touchmove", draw);
+        canvas.addEventListener("mousedown", start);
+        canvas.addEventListener("mousemove", draw);
+
+        canvas.addEventListener("touchend", stop);
+        canvas.addEventListener("mouseup", stop);
+        canvas.addEventListener("mouseout", stop);
+
+        //shapes
+        let square = document.getElementById("squareimg");
+        let rectangle = document.getElementById("rectimg");
+        let circle = document.getElementById("circleimg");
+        let picker= document.getElementById("picker");
+        let picker2= document.getElementById("picker2");
+        let picker3= document.getElementById("picker3");
+        let submit= document.getElementById("submit");
+        let submit2= document.getElementById("submit2");
+        let submit3= document.getElementById("submit3");
+        
+        //for square
+        square.addEventListener("click", function() {
+            picker.style.display = "block";
+            picker.style.opacity = 0.9;
+
+        });
+        submit.addEventListener("click", function() {
+            var x_axis = document.getElementById("x-axis").value;
+            var y_axis = document.getElementById("y-axis").value;
+            var x_width = document.getElementById("x-width").value;
+            picker.style.display = "none";
+            context.beginPath();
+            context.fillStyle = 'red';
+            context.rect(x_axis, y_axis, x_width, x_width);
+            context.fill();
+        });
+        //for rectangle
+        rectangle.addEventListener("click", function() {
+            picker3.style.display = "block";
+            picker3.style.opacity = 0.9;
+        });
+        submit3.addEventListener("click", function() {
+            var x_axis = document.getElementById("x-axis3").value;
+            var y_axis = document.getElementById("y-axis3").value;
+            var x_width = document.getElementById("x-width3").value;
+            var y_height = document.getElementById("y-height3").value;
+            picker3.style.display = "none";
+            context.beginPath();
+            context.fillStyle = 'royalBlue';
+            context.rect(x_axis, y_axis, x_width, y_height);
+            context.fill();
+        });
+        //for circle
+        circle.addEventListener("click", function() {
+            picker2.style.display = "block";
+            picker2.style.opacity = 0.9;
+        });
+        submit2.addEventListener("click", function() {
+            var x_axis = document.getElementById("x-axis2").value;
+            var y_axis = document.getElementById("y-axis2").value;
+            var radius = document.getElementById("radius").value;
+            picker2.style.display = "none";
+            context.beginPath();
+            context.fillStyle = 'lightgreen';
+            context.arc(x_axis, y_axis, radius, 0, Math.PI * 2);
+            context.fill();
+        });
+        //end of shapes
+        
+
+        //drag and drop the stickers
+        var dragItem = document.getElementById("sticker1"); 
+        var dragItem2 = document.getElementById("sticker2"); 
+        var dragItem3 = document.getElementById("sticker3"); 
+        var dragItem4 = document.getElementById("sticker4"); 
+        var dragItem5 = document.getElementById("sticker5"); 
+        var dragItem6 = document.getElementById("sticker6"); 
+        var dragItem7 = document.getElementById("sticker7"); 
+        var dragItem8 = document.getElementById("sticker8"); 
+        var dragItem9 = document.getElementById("sticker9"); 
+        var dragItem10 = document.getElementById("sticker10"); 
+        var dragItem11 = document.getElementById("sticker11"); 
+
+               
+        
+    
+        dragItem.addEventListener('dragstart', dragStart);
+        dragItem2.addEventListener('dragstart', dragStart);
+        dragItem3.addEventListener('dragstart', dragStart);
+        dragItem4.addEventListener('dragstart', dragStart);
+        dragItem5.addEventListener('dragstart', dragStart);
+        dragItem6.addEventListener('dragstart', dragStart);
+        dragItem7.addEventListener('dragstart', dragStart);
+        dragItem8.addEventListener('dragstart', dragStart);
+        dragItem9.addEventListener('dragstart', dragStart);
+        dragItem10.addEventListener('dragstart', dragStart);
+        dragItem11.addEventListener('dragstart', dragStart);
+        canvas.addEventListener('dragover', dragOver);
+        canvas.addEventListener('drop', Drop);   
+
+            function dragStart(event){
+                event.dataTransfer.setData("key", event.target.id);
+                
+                console.log("start dragging");
+            }
+            function dragOver(event){
+                event.preventDefault();
+                console.log("stop dragging");
+            }          
+            function Drop(event){
+                var dropItem = event.dataTransfer.getData("key");
+                var myElement = document.getElementById(dropItem);
+                var myNewElement = document.createElement("img");
+                myNewElement.src = myElement.src;                
+                canvas.appendChild(myNewElement);
+                event.preventDefault();
+                console.log(myNewElement);
+                
+                if (event.target.id == dragItem) {
+                    let img1 = new Image();
+                    img1.src = dragItem.src; 
+                    context.drawImage(img1, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem2){
+                    let img2 = new Image();
+                    img2.src = dragItem2.src; 
+                    context.drawImage(img2, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id = dragItem3){
+                    let img3 = new Image();
+                    img3.src = dragItem3.src; 
+                    context.drawImage(img3, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id = dragItem4){
+                    let img4 = new Image();
+                    img4.src = dragItem4.src; 
+                    context.drawImage(img4, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem5){
+                    let img5 = new Image();
+                    img5.src = dragItem5.src; 
+                    context.drawImage(img5, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem6){
+                    let img6 = new Image();
+                    img6.src = dragItem6.src; 
+                    context.drawImage(img6, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem7){
+                    let img7 = new Image();
+                    img7.src = dragItem7.src; 
+                    context.drawImage(img7, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem8){
+                    let img8 = new Image();
+                    img8.src = dragItem8.src; 
+                    context.drawImage(img8, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem9){
+                    let img9 = new Image();
+                    img9.src = dragItem9.src; 
+                    context.drawImage(img9, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem10){
+                    let img10 = new Image();
+                    img10.src = dragItem10.src; 
+                    context.drawImage(img10, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                } else if(event.target.id == dragItem11){
+                    let img11 = new Image();
+                    img11.src = dragItem11.src; 
+                    context.drawImage(img11, event.clientX - canvas.offsetLeft -35, event.clientY - canvas.offsetTop - 35, 70, 70);
+                }
+                
+            }//end of drop 
+
+    </script>
+</body>
+</html>
